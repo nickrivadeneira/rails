@@ -410,15 +410,18 @@ module ActiveModel
     # Returns all the full error messages for a given attribute in an array.
     #
     #   class Person
-    #     validates_presence_of :name, :email
+    #     validates_presence_of :name, :address, :email
     #     validates_length_of :name, in: 5..30
     #   end
     #
     #   person = Person.create()
-    #   person.errors.full_messages_for(:name)
-    #   # => ["Name is too short (minimum is 5 characters)", "Name can't be blank"]
-    def full_messages_for(attribute)
-      messages[attribute].map { |message| full_message(attribute, message) }
+    #   person.errors.full_messages_for(:name, :address)
+    #   # => ["Name is too short (minimum is 5 characters)", "Name can't be blank", "Address can't be blank"]
+    def full_messages_for(*attributes)
+      filtered_full_messages = map do |attribute, message|
+        full_message(attribute, message) if attributes.include?(attribute)
+      end
+      filtered_full_messages.compact
     end
 
     # Returns a full message for a given attribute.

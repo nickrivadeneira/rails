@@ -251,11 +251,12 @@ class ErrorsTest < ActiveModel::TestCase
     assert_equal ["name cannot be blank", "name cannot be nil"], person.errors.full_messages
   end
 
-  test "full_messages_for contains all the error messages for the given attribute" do
+  test "full_messages_for contains all the error messages for the given attributes" do
     person = Person.new
     person.errors.add(:name, "cannot be blank")
     person.errors.add(:name, "cannot be nil")
-    assert_equal ["name cannot be blank", "name cannot be nil"], person.errors.full_messages_for(:name)
+    person.errors.add(:age, "cannot be nil")
+    assert_equal ["name cannot be blank", "name cannot be nil", "age cannot be nil"], person.errors.full_messages_for(:name, :age)
   end
 
   test "full_messages_for does not contain error messages from other attributes" do
